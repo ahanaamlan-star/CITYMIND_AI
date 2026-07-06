@@ -5,12 +5,12 @@ import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 const metaEnv = (import.meta as any).env || {};
 
 const firebaseConfig = {
-  apiKey: metaEnv.VITE_FIREBASE_API_KEY || "AIzaSyBRYQnQ2uGyOx4sfIsiAkiJhxPQIrw6NNM",
-  authDomain: metaEnv.VITE_FIREBASE_AUTH_DOMAIN || "bamboo-flow-h8gvj.firebaseapp.com",
-  projectId: metaEnv.VITE_FIREBASE_PROJECT_ID || "bamboo-flow-h8gvj",
-  storageBucket: metaEnv.VITE_FIREBASE_STORAGE_BUCKET || "bamboo-flow-h8gvj.firebasestorage.app",
-  messagingSenderId: metaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || "814982496499",
-  appId: metaEnv.VITE_FIREBASE_APP_ID || "1:814982496499:web:08fd88b6773d80f91ff786"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
