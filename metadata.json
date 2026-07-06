@@ -1,0 +1,6 @@
+{
+  "name": "CityMind AI",
+  "description": "AI-powered Decision Intelligence Platform for transforming urban data into better decisions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

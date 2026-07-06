@@ -1,0 +1,128 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and preferences, stored upon registration.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique Firebase Authentication UID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's official email address."
+        },
+        "name": {
+          "type": "string",
+          "description": "The display name of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "The municipal clearance role of the user."
+        },
+        "department": {
+          "type": "string",
+          "description": "The government department of the user."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "The avatar URL of the user."
+        },
+        "activeAlerts": {
+          "type": "array",
+          "description": "Selected alert notification preferences."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the profile was created."
+        }
+      },
+      "required": ["uid", "email", "name"]
+    },
+    "Report": {
+      "title": "Community Report",
+      "description": "A localized hazard, infrastructure issue, or request filed by an authenticated citizen.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique report ID, matching the document ID."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the report."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the report."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Potholes", "Garbage", "Water Leakage", "Broken Street Lights", "Flooding", "Traffic Congestion", "Public Safety", "Pollution"],
+          "description": "Issue classification category."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "investigating", "resolved"],
+          "description": "Current resolution status of the report."
+        },
+        "votes": {
+          "type": "integer",
+          "description": "Number of community support votes."
+        },
+        "location": {
+          "type": "string",
+          "description": "Descriptive address or landmark name."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "GPS Latitude coordinate."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "GPS Longitude coordinate."
+        },
+        "reportedBy": {
+          "type": "string",
+          "description": "Name of the reporter."
+        },
+        "reportedByUid": {
+          "type": "string",
+          "description": "UID of the reporter."
+        },
+        "reportedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when reported."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "The severity priority."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Local base64 image representation with preview."
+        },
+        "voters": {
+          "type": "array",
+          "description": "List of user UIDs who have upvoted this report."
+        }
+      },
+      "required": ["id", "title", "description", "category", "status", "votes", "location", "latitude", "longitude", "reportedBy", "reportedByUid", "reportedAt", "priority"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Durable user profiles indexed by Auth UID."
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Community crowdsourced reports."
+    }
+  }
+}

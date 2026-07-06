@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net - default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /reports/{reportId} {
+      allow read: if request.auth != null;
+      
+      allow create: if request.auth != null 
+        && request.resource.data.reportedByUid == request.auth.uid
+        && request.resource.data.id == reportId
+        && isValidReport(request.resource.data)
+        && request.resource.data.status == 'open'
+        && request.resource.data.votes <= 1;
+      
+      allow update: if request.auth != null 
+        && isValidReport(request.resource.data)
+        && (
+          // Action 1: Upvote (anyone authenticated can update votes and voters array)
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes', 'voters'])
+          || 
+          // Action 2: Author can edit their own report details
+          (resource.data.reportedByUid == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title', 'description', 'category', 'location', 'latitude', 'longitude', 'priority', 'imageUrl', 'status']))
+        );
+      
+      allow delete: if request.auth != null && resource.data.reportedByUid == request.auth.uid;
+    }
+
+    function isValidReport(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.description is string && data.description.size() <= 5000
+        && data.category is string && data.category.size() <= 100
+        && data.status is string && (data.status == 'open' || data.status == 'investigating' || data.status == 'resolved')
+        && data.priority is string && (data.priority == 'low' || data.priority == 'medium' || data.priority == 'high')
+        && data.votes is int
+        && data.location is string && data.location.size() <= 500
+        && (data.latitude is float || data.latitude is int)
+        && (data.longitude is float || data.longitude is int)
+        && data.reportedBy is string && data.reportedBy.size() <= 200
+        && data.reportedByUid is string && data.reportedByUid.size() <= 128;
+    }
+  }
+}
